@@ -12,10 +12,10 @@ router.get("/", function (req, res, next) {
   res.json({ title: "Pokedex" });
 });
 // auth register
-https: router.post("/auth/register", authCheck, async (req, res, next) => {
+router.post("/auth/register", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const data = await auth.createUser({ email, password });
+    const { email, password, displayName = null } = req.body;
+    const data = await auth.createUser({ email, password, displayName });
     res.json({ data });
   } catch (error) {
     if (error.errorInfo) {
