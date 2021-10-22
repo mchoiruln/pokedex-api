@@ -5,6 +5,7 @@ const logger = require("morgan");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
+const pokedexRouter = require("./routes/pokedex");
 
 const app = express();
 
@@ -13,8 +14,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("static", express.static(path.join(__dirname, "public")));
-app.user(cors());
+app.use(cors());
 
+app.use("/api", pokedexRouter);
 app.use("/", indexRouter);
 
 module.exports = app;
