@@ -57,11 +57,18 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
     //   return Promise.resolve(poke);
     // });
 
-    const results = await Promise.all(
+    const results = await Promise.allSettled(
       result.data.results.map(async (poke) => {
-        const detail = await axios.get(poke.url);
-        poke.len = result.data.results.length;
-        poke.detail = detail.data;
+        await new Promise((resolve) =>
+          setTimeout(() => {
+            resolve();
+          }, 250)
+        );
+        const detail = await axios.get(poke.url, { timeout: 2000 });
+        // find what we need
+        const { id, types } = detail.data;
+        const types1 = types.map((i) => i.type.name);
+        poke.detail = { id, types: types1 };
         const idString = poke.detail.id.toString().padStart(3, "0");
         poke.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
         poke.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
@@ -70,7 +77,15 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
       })
     );
 
-    result.data.results = results;
+    result.data.results = results.map((r) => ({
+      status: r.status,
+      reason: r.reason,
+      ...r.value,
+    }));
+
+    result.data.hasRejected = result.data.results.find(
+      (r) => r.reason !== null
+    );
   } catch (error) {
     console.error(error);
   }
@@ -79,13 +94,21 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
 });
 
 router.get("/pokemon/:id", authCheck, async (req, res, next) => {
-  const id = parseInt(req.params.id);
-  const result = await axios.get(`/pokemon/${id}`);
+  const result = await axios.get(`/pokemon/${req.params.id}`);
+  const { id, name, height, stats, sprites, types } = result.data;
+  const poke = {
+    id,
+    name,
+    detail: { id, name, height, stats, sprites, types },
+  };
 
-  const idString = req.params.id.padStart(3, "0");
-  result.data.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
-  result.data.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
-  return res.json(result.data);
+  const types1 = types.map((i) => i.type.name);
+  poke.detail.types = types1;
+  const idString = poke.detail.id.toString().padStart(3, "0");
+  poke.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
+  poke.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
+
+  return res.json({ results: [poke] });
 });
 
 module.exports = router;
