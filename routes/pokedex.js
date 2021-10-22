@@ -11,6 +11,7 @@ const axios = require("axios").create({
 router.get("/", function (req, res, next) {
   res.json({ title: "Pokedex" });
 });
+
 // auth register
 router.post("/auth/register", async (req, res, next) => {
   try {
@@ -47,10 +48,29 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
   try {
     result = await axios.get(`/pokemon?limit=${limit}&offset=${offset}`);
 
-    await asyncForEach(result.data.results, async (poke) => {
-      const detail = await axios.get(poke.url);
-      poke.detail = detail.data;
-    });
+    // await asyncForEach(result.data.results, async (poke) => {
+    //   const detail = await axios.get(poke.url);
+    //   poke.len = result.data.results.length;
+    //   poke.detail = detail.data;
+    //   poke.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
+    //   poke.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
+    //   return Promise.resolve(poke);
+    // });
+
+    const results = await Promise.all(
+      result.data.results.map(async (poke) => {
+        const detail = await axios.get(poke.url);
+        poke.len = result.data.results.length;
+        poke.detail = detail.data;
+        const idString = poke.detail.id.toString().padStart(3, "0");
+        poke.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
+        poke.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
+
+        return poke;
+      })
+    );
+
+    result.data.results = results;
   } catch (error) {
     console.error(error);
   }
@@ -62,6 +82,9 @@ router.get("/pokemon/:id", authCheck, async (req, res, next) => {
   const id = parseInt(req.params.id);
   const result = await axios.get(`/pokemon/${id}`);
 
+  const idString = req.params.id.padStart(3, "0");
+  result.data.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
+  result.data.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
   return res.json(result.data);
 });
 
