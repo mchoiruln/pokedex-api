@@ -1,15 +1,15 @@
-name: Update epics
+name: Update user story
 on:
   issues:
     types: [opened, closed, reopened]
 jobs:
   epics:
     runs-on: ubuntu-latest
-    name: Update epic issues
+    name: Update user story issues
     steps:
       - name: Run epics action
         uses: cloudaper/epics-action@v1.1.4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          epic-label-name: epic
+          epic-label-name: user story
           auto-close-epic: true
