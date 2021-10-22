@@ -1,4 +1,4 @@
-const { initializeApp, cert, App } = require("firebase-admin/app");
+const { initializeApp, cert } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
 
 require("dotenv").config();
@@ -16,6 +16,9 @@ const authCheck = async (req, res, next) => {
 
     return next();
   } catch (e) {
+    if (e.errorInfo) {
+      return res.status(400).json(e.errorInfo);
+    }
     console.error(e);
     return res.status(401).json({ error: "Not Authorized" });
   }
@@ -23,3 +26,4 @@ const authCheck = async (req, res, next) => {
 
 module.exports = app;
 module.exports.authCheck = authCheck;
+module.exports.auth = getAuth(app);
