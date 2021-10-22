@@ -66,9 +66,19 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
         );
         const detail = await axios.get(poke.url, { timeout: 2000 });
         // find what we need
-        const { id, types } = detail.data;
+        const { id, types, stats, sprites, weigth } = detail.data;
+
         const types1 = types.map((i) => i.type.name);
-        poke.detail = { id, types: types1 };
+        poke.detail = {
+          id,
+          types: types1,
+          stats: stats.map((s) => ({
+            stat_base: s.base_stat,
+            stat_name: s.stat.name,
+          })),
+          sprites,
+          weigth,
+        };
         const idString = poke.detail.id.toString().padStart(3, "0");
         poke.imageFull = `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${idString}.png`;
         poke.imageDetail = `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${idString}.png`;
@@ -95,11 +105,22 @@ router.get("/pokemon", authCheck, async (req, res, next) => {
 
 router.get("/pokemon/:id", authCheck, async (req, res, next) => {
   const result = await axios.get(`/pokemon/${req.params.id}`);
-  const { id, name, height, stats, sprites, types } = result.data;
+  const { id, name, weigth, height, stats, sprites, types } = result.data;
   const poke = {
     id,
     name,
-    detail: { id, name, height, stats, sprites, types },
+    detail: {
+      id,
+      name,
+      weigth,
+      height,
+      stats: stats.map((s) => ({
+        stat_base: s.base_stat,
+        stat_name: s.stat.name,
+      })),
+      sprites,
+      types,
+    },
   };
 
   const types1 = types.map((i) => i.type.name);
