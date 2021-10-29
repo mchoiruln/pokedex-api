@@ -41,7 +41,8 @@ What 3rd party library we used :
   > To load .env file to process.env
 - nodemon
   > Hot reload when development
-  
+- memory-cache
+  > To create cache for response in short lifetime
 
 ## Deployment
 
