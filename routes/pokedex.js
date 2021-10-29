@@ -86,7 +86,8 @@ router.get("/pokemon", authCheck, cache(30), async (req, res, next) => {
 
 // cache in 30 seconds
 router.get("/pokemon/:id", authCheck, cache(30), async (req, res, next) => {
-  const result = await axios.get(`/pokemon/${req.params.id}`);
+  // id must be lowercase if its name of pokemon
+  const result = await axios.get(`/pokemon/${req.params.id.toLowerCase()}`);
   const { id, name, weigth, height, stats, sprites, types } = result.data;
   const poke = {
     id,
