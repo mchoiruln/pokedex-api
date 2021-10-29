@@ -34,10 +34,8 @@ What 3rd party library we used :
 - Cors
   > To allow access when domain is different
 - Axios
-  > To consume api backend
-- Vue-Chartjs
-  > To show statistic pokemon
-- Firebase Admin
+  > To consume poke api
+- Firebase Admin SDK
   > To create user and validation token using google technology
 - Dotenv
   > To load .env file to process.env
