@@ -1,5 +1,7 @@
 # Pokemon API
 
+[![Build Status](https://app.travis-ci.com/mchoiruln/pokedex-api.svg?branch=main)](https://app.travis-ci.com/mchoiruln/pokedex-api)
+
 This project is serving a pokemon api for Frontend App, Data pokemon
 is coming from PokeAPI services.
 
