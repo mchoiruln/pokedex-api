@@ -13,22 +13,6 @@ router.get("/", function (req, res, next) {
   res.json({ title: "Pokedex" });
 });
 
-// auth register
-router.post("/auth/register", async (req, res, next) => {
-  try {
-    const { email, password, displayName = null } = req.body;
-    const data = await auth.createUser({ email, password, displayName });
-    res.json({ data });
-  } catch (error) {
-    if (error.errorInfo) {
-      return res.status(400).json(error.errorInfo);
-    }
-    console.error(error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-});
-// end auth register
-
 // api get one pokemon by pokedex id or name
 // pokeapi doest expose detail of pokemon, so we try to get all information one by one
 // cache in 30 seconds
