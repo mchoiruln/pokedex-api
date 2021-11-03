@@ -21,6 +21,23 @@ $ npm install
 $ npm run dev
 ```
 
+## Test
+```bash
+$ npm run test
+
+# Example
+GET /api 200 4.981 ms - 19
+ PASS  test/index.spec.js
+  API Endpoints
+    √ GET /api should show message api pokedex (50 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        4.004 s
+Ran all test suites.
+```
+
 ## Production
 
 ```bash
@@ -44,7 +61,16 @@ What 3rd party library we used :
 - memory-cache
   > To create cache for response in short lifetime
 
+### Test 3rd Party library
+
+- [Jest](https://www.npmjs.com/package/jest)
+- [Supertest](https://www.npmjs.com/package/supertest)
+- [jest-node-exports-resolver](https://www.npmjs.com/package/jest-node-exports-resolver)
+  > To resolve `Cannot find module 'firebase-admin/app' from 'libs/firebase.js'`
+    when run testing
+
 ## Deployment
 
 - [Pokedex UI](https://pokedex-ui-nuxt.netlify.app)
 - [Pokedex API](https://pokedex-api-express.herokuapp.com/)
+
